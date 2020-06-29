@@ -1,0 +1,20 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background-color: #5AAFED;
+    height: 100vh;
+    font-size: 2rem;
+}
+header {
+    padding: 1rem;
+    background-color: #3D348B;
+    color: #03F7EB;
+    text-align: center;
+}
+input {
+    font-size: 1rem;
+    padding: 0.5rem;
+}
