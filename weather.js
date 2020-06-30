@@ -2,13 +2,36 @@ const search = document.getElementById("run-search");
 const input = document.getElementById("city-search");
 const forecast = document.getElementById("forecast");
 const key = "da8e4db147cb36474ba1f8bcb3bfd27d";
+
+function mode(array)
+{
+    if(array.length === 0) return null;
+    let modeMap = {};
+    let maxEl = array[0], maxCount = 1;
+    for(let i = 0; i < array.length; i++) {
+        let el = array[i];
+        if(modeMap[el] == null)
+            modeMap[el] = 1;
+        else
+            modeMap[el]++;
+        if(modeMap[el] > maxCount) {
+            maxEl = el;
+            maxCount = modeMap[el];
+        }
+    }
+    return maxEl;
+}
+
 const addForecastPerDay = (list, count) => {
     let avgTempArr = [];
+    let descriptionArr = [];
     let avgTemp, minTemp, maxTemp;
     for (let i = count; i < count + 8; i++) {
         console.log(list[i])
-        avgTempArr.push(list[i].main.temp)
+        avgTempArr.push(list[i].main.temp);
+        descriptionArr.push(list[i].weather[0].description)
     }
+    console.log(descriptionArr)
     avgTemp = avgTempArr.reduce((prev, curr) => {
         return prev + curr
     }, 0) / 8 //average temp
@@ -24,9 +47,10 @@ const addForecastPerDay = (list, count) => {
     forecast.innerHTML+= `
     <div class="daycast">
     <h2>${new Date(list[count].dt_txt).toDateString()}</h2>
-    Average Temp; ${Math.round(avgTemp * 10) / 10} <br>
-    Min: ${Math.round(minTemp * 10) / 10} <br>
-    Max: ${Math.round(maxTemp * 10) / 10} <br>
+    Average Temp: ${Math.round(avgTemp * 10) / 10}°C <br>
+    Min: ${Math.round(minTemp * 10) / 10}°C <br>
+    Max: ${Math.round(maxTemp * 10) / 10}°C <br>
+    Summary: ${mode(descriptionArr)}
     </div>
     `
 }
@@ -58,12 +82,9 @@ search.addEventListener("click", () => {
         .then(response => response.json())
         .then(data => {
             console.log(data.list)
-            /*let convert = data.list[0].dt_txt
-            console.log(new Date(convert))*/
             let list = data.list
             let today = new Date().toDateString()
             console.log(today)
-            //let z = 0;
             let count = 0;
             console.log(new Date(list[count].dt_txt).toDateString())
             while(new Date(list[count].dt_txt).toDateString() === today) {
@@ -79,6 +100,7 @@ search.addEventListener("click", () => {
 })
 //weather by coords for users home
 document.getElementById("search-local").addEventListener("click", () => {
+    forecast.innerHTML = "";
     let lat, lon;
     const getPosition = (position) => {
         lat = position.coords.latitude;
@@ -106,12 +128,9 @@ document.getElementById("search-local").addEventListener("click", () => {
             .then(response => response.json())
             .then(data => {
                 console.log(data.list)
-                /*let convert = data.list[0].dt_txt
-                console.log(new Date(convert))*/
                 let list = data.list
                 let today = new Date().toDateString()
                 console.log(today)
-                //let z = 0;
                 let count = 0;
                 console.log(new Date(list[count].dt_txt).toDateString())
                 while(new Date(list[count].dt_txt).toDateString() === today) {
@@ -127,4 +146,7 @@ document.getElementById("search-local").addEventListener("click", () => {
     }
     let coords = navigator.geolocation.getCurrentPosition(getPosition)
     console.log(coords)
+})
+window.addEventListener("load", () => {
+    document.getElementById("search-local").click()
 })
