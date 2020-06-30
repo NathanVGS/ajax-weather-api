@@ -14,7 +14,26 @@ header {
     color: #03F7EB;
     text-align: center;
 }
+.local {
+    float: left;
+}
 input {
     font-size: 1rem;
     padding: 0.5rem;
+}
+#weather-now {
+    width: 20%;
+    margin: 10px auto 0 auto;
+}
+#forecast {
+    width: 80%;
+    margin: 10px auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-column-gap: 10px;
+}
+.daycast {
+    border: 1px solid #ffffff;
+    padding: 1rem;
+    font-size: 1.5rem;
 }

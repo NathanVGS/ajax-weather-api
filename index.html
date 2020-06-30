@@ -9,18 +9,21 @@
     <link rel="stylesheet" href="weather.css">
 </head>
 <body>
-
 <header>
+    <div class="local">
+        <input type="button" value="Local Forecast" id="search-local">
+    </div>
     <div>
         <label for="city-search">Search info for city: </label>
-        <input type="text" id="city-search" placeholder="Enter city"><br/>
+        <input type="text" id="city-search" placeholder="Enter city">
         <input type="button" value="Search" id="run-search">
     </div>
 </header>
 
-<section id="weather-now">
-
-</section>
+<main>
+    <section id="weather-now"></section>
+    <section id="forecast"></section>
+</main>
 
 <script src="weather.js"></script>
 </body>
