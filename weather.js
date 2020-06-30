@@ -20,6 +20,7 @@ const addForecastPerDay = (list, count) => {
     minTemp = avgTempArr.reduce((prev, curr) => {
         return prev < curr ? prev : curr
     }) // min temp
+
     forecast.innerHTML+= `
     <div class="daycast">
     <h2>${new Date(list[count].dt_txt).toDateString()}</h2>
@@ -29,11 +30,13 @@ const addForecastPerDay = (list, count) => {
     </div>
     `
 }
+
 input.focus();
 
 document.body.addEventListener("keypress", e => {
     if(e.key === "Enter") search.click()
 })
+
 search.addEventListener("click", () => {
     let cityName = input.value;
     forecast.innerHTML = "";
@@ -71,6 +74,7 @@ search.addEventListener("click", () => {
                 addForecastPerDay(list, count);
                 count+=8;
             }
+
         })
 })
 //weather by coords for users home
@@ -97,6 +101,29 @@ document.getElementById("search-local").addEventListener("click", () => {
             `
                 }))
             .catch(err => console.error(err.message))
+        //fix duplicated code somehow
+        fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${key}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.list)
+                /*let convert = data.list[0].dt_txt
+                console.log(new Date(convert))*/
+                let list = data.list
+                let today = new Date().toDateString()
+                console.log(today)
+                //let z = 0;
+                let count = 0;
+                console.log(new Date(list[count].dt_txt).toDateString())
+                while(new Date(list[count].dt_txt).toDateString() === today) {
+                    console.log(count)
+                    count++
+                }
+                for (let i = 0; i < 4; i++) {
+                    addForecastPerDay(list, count);
+                    count+=8;
+                }
+
+            })
     }
     let coords = navigator.geolocation.getCurrentPosition(getPosition)
     console.log(coords)
