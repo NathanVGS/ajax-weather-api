@@ -25,10 +25,20 @@ header {
 input {
     font-size: 1rem;
     padding: 0.5rem;
+    background-color: #FFFFFF;
+    font-weight: bold;
+}
+input:hover {
+    color: rgba(34,0,255,1);
+    background-color: #ddf1fc;
+    cursor: pointer;
+}
+img {
+    margin: 0 auto;
 }
 #weather-now {
     width: 20%;
-    margin: 10px auto 0 auto;
+    margin: 50px auto 0 auto;
 }
 #forecast {
     width: 80%;
@@ -39,9 +49,21 @@ input {
 }
 .daycast {
     border: 1px solid #ffffff;
+    border-radius: 10px;
     padding: 1rem;
     font-size: 1.5rem;
-    background: linear-gradient(14deg, rgba(26,134,152,0.7) 0%, rgba(0,232,255,0.7) 100%)
+    background: linear-gradient(14deg, rgba(26,134,152,0.7) 0%, rgba(0,232,255,0.7) 100%);
+    font-weight: bold;
+    text-align: center;
+}
+.daycast:hover {
+    cursor: pointer;
+    background-color: #FFFFFF;
+    transition: 1s;
+}
+.active{
+    background-color: #FFFFFF;
+    transition: 1s;
 }
 #graphs {
     display: none;

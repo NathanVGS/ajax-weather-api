@@ -2,7 +2,7 @@ const search = document.getElementById("run-search");
 const input = document.getElementById("city-search");
 const forecast = document.getElementById("forecast");
 const key = "da8e4db147cb36474ba1f8bcb3bfd27d";
-
+//get most frequent item
 function mode(array)
 {
     if(array.length === 0) return null;
@@ -21,7 +21,25 @@ function mode(array)
     }
     return maxEl;
 }
-
+//show details when daycasts are clicked
+function showDetails(e){
+    console.log(e.target)
+    console.log(e.target.parentElement)
+    let target = e.target;
+    if(!(target.classList.contains("daycast") || target.parentElement.classList.contains("daycast"))) return;
+    if(target.classList.contains("daycast")){
+        Array.from(document.getElementsByClassName("active")).forEach(el => {
+            el.classList.remove("active")
+        })
+        target.classList.toggle("active")
+    } else {
+        Array.from(document.getElementsByClassName("active")).forEach(el => {
+            el.classList.remove("active")
+        })
+        target.parentElement.classList.toggle("active")
+    }
+}
+//next four days
 const addForecastPerDay = (list, count) => {
     let avgTempArr = [];
     let descriptionArr = [];
@@ -31,10 +49,11 @@ const addForecastPerDay = (list, count) => {
         avgTempArr.push(list[i].main.temp);
         descriptionArr.push(list[i].weather[0].description)
     }
-    console.log(descriptionArr)
+    descriptionArr = descriptionArr.slice(2,8)
+    avgTempArr = avgTempArr.slice(2,8)
     avgTemp = avgTempArr.reduce((prev, curr) => {
         return prev + curr
-    }, 0) / 8 //average temp
+    }, 0) / avgTempArr.length //average temp
 
     maxTemp = avgTempArr.reduce((prev, curr) => {
         return prev > curr ? prev : curr
@@ -63,16 +82,18 @@ document.body.addEventListener("keypress", e => {
 
 search.addEventListener("click", () => {
     let cityName = input.value;
+    input.value = "";
     forecast.innerHTML = "";
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${key}`)
         .then(response => response.json())
         .then(data => {
+            console.log(data)
             document.getElementById("weather-now").innerHTML = `
             <div class="daycast">
-            <h2>Today (now)</h2>
-            <p><img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png"
+            <h2>${data.name}, ${data.sys.country} - today (now)</h2>
+            <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png"
             alt="${data.weather[0].description}"
-            title="${data.weather[0].main}" /></p>
+            title="${data.weather[0].main}" />
             <p>Temperature: ${Math.round(data.main.temp * 10) / 10}°C</p>
             </div>
             `
@@ -84,19 +105,17 @@ search.addEventListener("click", () => {
     fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&appid=${key}`)
         .then(response => response.json())
         .then(data => {
-            //console.log(data.list)
             let list = data.list
             let today = new Date().toDateString()
             let count = 0;
             while(new Date(list[count].dt_txt).toDateString() === today) {
-                console.log(count)
                 count++
             }
             for (let i = 0; i < 4; i++) {
                 addForecastPerDay(list, count);
                 count+=8;
             }
-
+            document.getElementsByTagName("main")[0].addEventListener("click", showDetails)
         }) //change background image
         .then(_ => {
         fetch(`https://api.unsplash.com/search/photos?client_id=oHvaVH5Ar3kJ6NtTI58Ye852AHaBXlXhfhkgqMRRBuQ&page=1&query=${cityName}`)
@@ -128,11 +147,9 @@ document.getElementById("search-local").addEventListener("click", () => {
                     document.getElementById("weather-now").innerHTML = `
             <div class="daycast">
             <h2>${data.name} now:</h2>
-            <p>
             <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png"
             alt="${data.weather[0].description}"
             title="${data.weather[0].main}" />
-            </p>
             <p>Temperature: ${Math.round(data.main.temp * 10) / 10}°C</p>
             </div>
             `
@@ -142,25 +159,20 @@ document.getElementById("search-local").addEventListener("click", () => {
         fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${key}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data.list)
                 let list = data.list
                 let today = new Date().toDateString()
-                console.log(today)
                 let count = 0;
-                console.log(new Date(list[count].dt_txt).toDateString())
                 while(new Date(list[count].dt_txt).toDateString() === today) {
-                    console.log(count)
                     count++
                 }
                 for (let i = 0; i < 4; i++) {
                     addForecastPerDay(list, count);
                     count+=8;
                 }
-
+                document.getElementsByTagName("main")[0].addEventListener("click", showDetails)
             })
     }
-    let coords = navigator.geolocation.getCurrentPosition(getPosition)
-    console.log(coords)
+    navigator.geolocation.getCurrentPosition(getPosition)
 })
 window.addEventListener("load", () => {
     document.getElementById("search-local").click()
