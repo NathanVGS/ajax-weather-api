@@ -4,13 +4,18 @@
     box-sizing: border-box;
 }
 body {
-    background-color: #5AAFED;
-    height: 100vh;
+    /*background-color: #5AAFED;*/
+    background: rgb(26,134,152);
+    background: linear-gradient(14deg, rgba(26,134,152,1) 0%, rgba(0,232,255,1) 100%);
+    min-height: 100vh;
     font-size: 2rem;
+    color: #2d2c2c;
 }
 header {
     padding: 1rem;
-    background-color: #3D348B;
+    /*background-color: #3D348B;*/
+    background: rgb(27,101,168);
+    background: linear-gradient(74deg, rgba(27,101,168,1) 0%, rgba(34,0,255,1) 100%);
     color: #03F7EB;
     text-align: center;
 }
@@ -36,11 +41,15 @@ input {
     border: 1px solid #ffffff;
     padding: 1rem;
     font-size: 1.5rem;
+    background: linear-gradient(14deg, rgba(26,134,152,0.7) 0%, rgba(0,232,255,0.7) 100%)
+}
+#graphs {
+    display: none;
 }
 
 @media only screen and (max-width: 1000px) {
     #weather-now {
-        width: 50%
+        width: 40%
     }
     #forecast {
         width: 80%;
@@ -48,7 +57,11 @@ input {
         grid-row-gap: 10px;
     }
 }
-/*@media only screen and (max-width: 850px){
-
-
-}*/
+@media only screen and (max-width: 600px){
+    #weather-now {
+        width: 80%
+    }
+    #forecast {
+        grid-template-columns: 1fr;
+    }
+}

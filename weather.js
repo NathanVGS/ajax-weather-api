@@ -27,7 +27,7 @@ const addForecastPerDay = (list, count) => {
     let descriptionArr = [];
     let avgTemp, minTemp, maxTemp;
     for (let i = count; i < count + 8; i++) {
-        console.log(list[i])
+        //console.log(list[i])
         avgTempArr.push(list[i].main.temp);
         descriptionArr.push(list[i].weather[0].description)
     }
@@ -77,16 +77,17 @@ search.addEventListener("click", () => {
             </div>
             `
         })
-        .catch(err => alert(err.message))
+        .catch(err => {
+            console.error(err.message);
+            alert("City "+ cityName+ " could not be found");
+        })
     fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&appid=${key}`)
         .then(response => response.json())
         .then(data => {
-            console.log(data.list)
+            //console.log(data.list)
             let list = data.list
             let today = new Date().toDateString()
-            console.log(today)
             let count = 0;
-            console.log(new Date(list[count].dt_txt).toDateString())
             while(new Date(list[count].dt_txt).toDateString() === today) {
                 console.log(count)
                 count++
@@ -96,12 +97,26 @@ search.addEventListener("click", () => {
                 count+=8;
             }
 
-        })
+        }) //change background image
+        .then(_ => {
+        fetch(`https://api.unsplash.com/search/photos?client_id=oHvaVH5Ar3kJ6NtTI58Ye852AHaBXlXhfhkgqMRRBuQ&page=1&query=${cityName}`)
+            .then(response => response.json())
+            .then(data => {
+                let url = data.results[Math.floor(Math.random() * 10)].urls.regular;
+                document.body.style.backgroundImage = `url(${url})`
+                document.body.style.backgroundPosition = "center"
+                document.body.style.backgroundRepeat = "no-repeat"
+                document.body.style.backgroundSize = "cover"
+            })
+    })
+
+
 })
 //weather by coords for users home
 document.getElementById("search-local").addEventListener("click", () => {
     forecast.innerHTML = "";
     let lat, lon;
+    document.body.style.background = "linear-gradient(14deg, rgba(26,134,152,1) 0%, rgba(0,232,255,1) 100%)"
     const getPosition = (position) => {
         lat = position.coords.latitude;
         lon = position.coords.longitude;
@@ -150,3 +165,27 @@ document.getElementById("search-local").addEventListener("click", () => {
 window.addEventListener("load", () => {
     document.getElementById("search-local").click()
 })
+
+
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+        ['Year', 'Sales', 'Expenses', "third line"],
+        ['2004',  1000,      400, 500],
+        ['2005',  1170,      460, 500],
+        ['2006',  660,       1120, 500],
+        ['2007',  1030,      540, 500]
+    ]);
+
+    var options = {
+        title: 'Company Performance',
+        curveType: 'function',
+        legend: { position: 'bottom' }
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+    chart.draw(data, options);
+}
